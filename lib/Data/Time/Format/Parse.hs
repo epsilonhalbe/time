@@ -274,15 +274,29 @@ parseValue l mpad c =
       'p' -> oneOf (let (am,pm) = amPm l in [am, pm])
 
       -- hour of day (i.e. 24h)
-      'H' -> digits ZeroPadding 2
-      'k' -> digits SpacePadding 2
+      'H' -> do hours <- digits ZeroPadding 2
+                hours' <- maybe (fail $ "Invalid hours: "++ hours) return $ readMaybe hours :: ReadP Int
+                unless  (0  <= hours' && hours' <= 23) (fail "hours not in 00-23")
+                return hours
+      'k' -> do hours <- digits SpacePadding 2
+                hours' <- maybe (fail $ "Invalid hours: "++ hours) return $ readMaybe hours :: ReadP Int
+                unless  (0  <= hours' && hours' <= 23) (fail "hours not in 0-23")
+                return hours
 
       -- hour of dayhalf (i.e. 12h)
-      'I' -> digits ZeroPadding 2
-      'l' -> digits SpacePadding 2
-
+      'I' -> do hours <- digits ZeroPadding 2
+                hours' <- maybe (fail $ "Invalid hours: "++ hours) return $ readMaybe hours :: ReadP Int
+                unless  (0  <= hours' && hours' <= 12) (fail "hours not in 0-12")
+                return hours
+      'l' -> do hours <- digits SpacePadding 2
+                hours' <- maybe (fail $ "Invalid hours: "++ hours) return $ readMaybe hours :: ReadP Int
+                unless  (0  <= hours' && hours' <= 12) (fail "hours not in 0-12")
+                return hours
       -- minute of hour
-      'M' -> digits ZeroPadding 2
+      'M' -> do minutes <- digits ZeroPadding 2
+                minutes' <- maybe (fail $ "Invalid minutes: "++ minutes) return $ readMaybe minutes :: ReadP Int
+                unless  (0  <= minutes' && minutes' <= 59) (fail "minutes not in 00-59")
+                return minutes
 
       -- second of minute
       'S' -> digits ZeroPadding 2
